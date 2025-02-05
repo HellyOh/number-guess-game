@@ -6,11 +6,16 @@ let resetButton = document.querySelector("#reset-button");
 let chance = 5;
 let gameOver = false;
 let chanceArea = document.querySelector("#chance-area");
+let history = [];
 
 // playButton 클릭 이벤트 리스너 추가
 playButton.addEventListener('click', play);
 // resetButton 클릭 이벤트 리스너 추가
 resetButton.addEventListener('click', reset);
+//useInput에 입력하고 나면 데이터를 지워주고 커서를 위치 시킨다.
+userInput.addEventListener('focus', function() {
+    userInput.value = "";
+});
 
 function pickRandomNumber() {
   computerNum = Math.floor(Math.random() * 100) + 1;
@@ -20,7 +25,19 @@ function pickRandomNumber() {
 // play 함수 정의
 function play() {
     let userValue = userInput.value;
+
+    //1~100 사이의 숫자가 아닌 경우
+    if (userValue < 1 || userValue > 100) {
+        alert("1~100 사이의 숫자를 입력해주세요.");
+        return;
+    }
     
+    //이미 입력한 숫자인 경우
+    if (history.includes(userValue)) {
+        alert("이미 입력한 숫자입니다.");
+        return;
+    }
+
     chance = chance - 1;
     chanceArea.textContent = `남은 기회: ${chance}번`;
 
@@ -33,6 +50,9 @@ function play() {
     } else {
         resultArea.textContent = "Up";
     }
+
+    //history에 기록
+    history.push(userValue);
 
     //chance가 0이면 게임오버
     if (chance == 0) {
